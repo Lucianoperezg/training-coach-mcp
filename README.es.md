@@ -98,16 +98,69 @@ El segundo comando abre el navegador para que des acceso a tu cuenta de Cloudfla
 npx wrangler d1 create entrenos
 ```
 
-Te enseña un `database_id`. Abre `wrangler.toml` con cualquier editor de texto y pégalo donde pone `PEGA_AQUI_EL_ID`.
+Al terminar, te enseña un texto con una línea parecida a esta (el tuyo tendrá otras letras y números):
 
-### 6. Tu zona horaria y tu reloj en `wrangler.toml`
+```
+database_id = "1a2b3c4d-1234-5678-9abc-def012345678"
+```
 
-En el mismo archivo, en el apartado `[vars]`:
+Copia lo que va **entre las comillas**. Lo vas a pegar en el paso siguiente.
 
-- **`TZ`**: tu zona horaria en [formato IANA](https://es.wikipedia.org/wiki/Anexo:Zonas_horarias_de_la_base_de_datos_tz), por ejemplo `"Europe/Madrid"` o `"America/Mexico_City"`. Decide qué es "hoy" y pasa las fechas de Hevy a tu fecha local. **Ponla siempre.** Si borras la línea, el servidor usa `Europe/Madrid`.
-- **`WATCH`**: escribe `"suunto"` si tu reloj es un Suunto; si no, déjalo vacío (`""`). Suunto enseña la sensación del entreno ("feel") con la escala al revés, y con este ajuste el entrenador te dice también el valor tal como lo ves en el reloj.
+### 6. Editar `wrangler.toml` (la configuración)
 
-Guarda el archivo.
+**Qué es:** `wrangler.toml` es un archivo de texto con la configuración de tu servidor. Está dentro de la carpeta que descomprimiste en el paso 3.
+
+**Cómo abrirlo:**
+- **Windows:** clic derecho sobre `wrangler.toml` → **Abrir con** → **Bloc de notas**.
+- **Mac:** clic derecho → **Abrir con** → **TextEdit**.
+- O con cualquier editor de código, como VS Code.
+
+**Reglas, antes de tocar nada:**
+- Cambia **solo lo que va entre comillas**, y deja las comillas.
+- No toques nada más: ni los nombres, ni los corchetes, ni el resto de líneas.
+- Lo que va después de `#` en una línea son comentarios: explicaciones que el servidor no lee.
+
+**1. El ID de la base de datos.** Busca esta línea:
+
+```toml
+database_id = "PEGA_AQUI_EL_ID"   # el que te da: npx wrangler d1 create entrenos
+```
+
+Sustituye `PEGA_AQUI_EL_ID` por el ID que copiaste en el paso 5. Debe quedar así, con tu ID:
+
+```toml
+database_id = "1a2b3c4d-1234-5678-9abc-def012345678"   # el que te da: npx wrangler d1 create entrenos
+```
+
+**2. Tu zona horaria y tu reloj.** Más abajo, en el apartado `[vars]`, verás esto:
+
+```toml
+TZ = "UTC"                        # tu zona horaria, p. ej. "America/Mexico_City" o "Europe/London"
+WATCH = ""                        # marca del reloj: "suunto" si es un Suunto (explica el feel en su escala); si no, vacío
+```
+
+Por ejemplo, para alguien en España con un reloj Suunto debe quedar así:
+
+```toml
+TZ = "Europe/Madrid"              # tu zona horaria, p. ej. "America/Mexico_City" o "Europe/London"
+WATCH = "suunto"                  # marca del reloj: "suunto" si es un Suunto (explica el feel en su escala); si no, vacío
+```
+
+- **`TZ` (zona horaria):** la plantilla trae `"UTC"`, que es la hora universal, sin horario de verano. **Cámbiala por la tuya**: de ella depende qué es "hoy" para tu entrenador y en qué día cae cada entreno. Escríbela tal cual, con mayúsculas y la barra:
+
+  | Si vives en… | Escribe |
+  |---|---|
+  | España (península y Baleares) | `"Europe/Madrid"` |
+  | México (centro) | `"America/Mexico_City"` |
+  | Argentina | `"America/Argentina/Buenos_Aires"` |
+  | Colombia | `"America/Bogota"` |
+  | Reino Unido | `"Europe/London"` |
+  | Nueva York (costa este de EE. UU.) | `"America/New_York"` |
+
+  Si no está la tuya, búscala en la columna "TZ identifier" de [esta lista](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+- **`WATCH` (reloj):** solo importa si tu reloj es un Suunto: entonces escribe `"suunto"`. Con cualquier otro reloj, déjalo como está, `""`.
+
+**3. Guarda el archivo.** En el Bloc de notas, usa **Archivo → Guardar**, no "Guardar como". Comprueba que el archivo se sigue llamando `wrangler.toml` y no `wrangler.toml.txt`: si ves `.txt` al final, quítalo al renombrarlo.
 
 ### 7. Crear las tablas
 
@@ -115,37 +168,50 @@ Guarda el archivo.
 npm run db:init
 ```
 
-### 8. Guardar los secretos
+### 8. Guardar los secretos (el token y las API keys)
 
-Los secretos se guardan cifrados en Cloudflare, nunca en un archivo. Cada comando te pide el valor. Al pegarlo no se ve en pantalla.
+Los secretos son contraseñas que se guardan cifradas en Cloudflare, nunca en un archivo de la carpeta.
 
-Primero necesitas un **token**: una contraseña larga y aleatoria que protege tu servidor. Usa un generador de contraseñas con 40 caracteres o más, solo letras y números. O, en Windows, en PowerShell:
+**Primero, el token del MCP.** Es una contraseña que **te inventas tú**: no te la da ninguna web. Protege tu servidor, y luego irá al final de la URL del conector (paso 10). Quien tenga esa URL puede leer tus datos.
 
-```powershell
--join ((1..32) | % { '{0:x2}' -f (Get-Random -Max 256) })
-```
+1. **Genérala.** En Windows, abre PowerShell y ejecuta:
 
-En Mac o Linux:
+   ```powershell
+   -join ((1..32) | % { '{0:x2}' -f (Get-Random -Max 256) })
+   ```
 
-```bash
-openssl rand -hex 32
-```
+   En Mac o Linux, en la terminal:
 
-Guárdalo en un sitio seguro y después:
+   ```bash
+   openssl rand -hex 32
+   ```
 
-```bash
-npx wrangler secret put MCP_TOKEN
-```
+   Te sale una línea de 64 letras y números: ese es tu token. También vale un generador de contraseñas, con solo letras y números y 40 caracteres o más.
+2. **Cópiala y guárdala** en tu gestor de contraseñas o en una nota privada. La necesitarás en el paso 10, y Cloudflare no te la vuelve a enseñar.
+3. **Dásela a Cloudflare.** Ejecuta:
+
+   ```bash
+   npx wrangler secret put MCP_TOKEN
+   ```
+
+   Cuando pregunte `Enter a secret value`, pégala y pulsa Enter. **Es normal que no se vea nada al pegar**: está oculta a propósito.
+4. Si te pregunta si quieres crear el Worker porque todavía no existe, responde que sí (`Y`).
+
+**Después, las API keys.** Haz lo mismo con cada una; aquí no tienes que inventarte nada, pegas la que ya tienes:
 
 ```bash
 npx wrangler secret put INTERVALS_API_KEY
 ```
 
+Pega la API key de intervals.icu del paso 1.
+
 ```bash
 npx wrangler secret put HEVY_API_KEY
 ```
 
-Sáltate el último si no usas Hevy.
+Pega la API key de Hevy del paso 2. Sáltatelo si no usas Hevy.
+
+**Si te equivocas** al pegar alguna, vuelve a ejecutar el mismo comando: el valor nuevo sobrescribe al anterior.
 
 ### 9. Publicar
 
@@ -163,6 +229,12 @@ Te enseña tu URL: `https://entrenos-mcp.<tu-subdominio>.workers.dev`. Para comp
 
    ```
    https://entrenos-mcp.<tu-subdominio>.workers.dev/mcp/<TU_MCP_TOKEN>
+   ```
+
+   Es la URL del paso 9, seguida de `/mcp/` y del token del paso 8, sin espacios ni barras de más. Por ejemplo, con un subdominio y un token inventados:
+
+   ```
+   https://entrenos-mcp.abc123.workers.dev/mcp/3f9a1c7e5b2d8a4f6c0e9b1d7a3f5c2e8b4d6a0f1c3e5b7d9a2c4e6f8b0d1a3c
    ```
 
 2. En los permisos de las herramientas del conector, pon las que escriben (`nota`, `estado`, `programar_entrenos`, `programar_rutinas`) en **"Preguntar siempre"**.
