@@ -13,7 +13,26 @@ The core is generic. It syncs your data, stores it in your own database and lets
 
 The **running and strength coach** in [`claude-ai/`](claude-ai/) is just one example built on top of it. Copy it and adapt it to your sport, your goals and your rules.
 
-<!-- screenshots -->
+## See it working
+
+It runs **in the cloud** (Cloudflare), so there's nothing to leave switched on at home. These are real answers from Claude, asking in plain language from a **computer** and from a **phone**:
+
+![How it works: watch, intervals.icu, MCP server on Cloudflare, Claude](docs/images/architecture.png)
+
+**On the computer** (claude.ai):
+
+![Claude answering "show me my km per week" with a chart, from the web](docs/images/desktop-weekly-km.png)
+
+![Claude drawing the last run km by km, from the web](docs/images/desktop-last-run.png)
+
+**On the phone** (Claude app), same connector, no computer involved:
+
+<p>
+<img src="docs/images/mobile-last-run.jpeg" alt="Claude app on a phone drawing the last run km by km" width="300">
+<img src="docs/images/mobile-last-5-runs.jpeg" alt="Claude app on a phone comparing the last five runs in one chart" width="300">
+</p>
+
+The screenshots are in Spanish because that's the language the author uses; Claude answers in whichever language you write in.
 
 ## What it connects
 

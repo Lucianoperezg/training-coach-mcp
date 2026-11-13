@@ -13,7 +13,26 @@ El núcleo es genérico. Sincroniza tus datos, los guarda en tu propia base de d
 
 El **entrenador de carrera y fuerza** de [`claude-ai/`](claude-ai/) es solo un ejemplo montado encima. Cópialo y adáptalo a tu deporte, tus objetivos y tus reglas.
 
-<!-- screenshots -->
+## Míralo funcionando
+
+Corre **en la nube** (Cloudflare), así que no hay nada que dejar encendido en casa. Son respuestas reales de Claude, preguntando en lenguaje normal desde un **ordenador** y desde un **móvil**:
+
+![Cómo funciona: reloj, intervals.icu, servidor MCP en Cloudflare, Claude](docs/images/architecture.png)
+
+**En el ordenador** (claude.ai):
+
+![Claude respondiendo "enséñame mis km por semana" con una gráfica, desde la web](docs/images/desktop-weekly-km.png)
+
+![Claude dibujando la última carrera km a km, desde la web](docs/images/desktop-last-run.png)
+
+**En el móvil** (app de Claude), con el mismo conector y sin ordenador de por medio:
+
+<p>
+<img src="docs/images/mobile-last-run.jpeg" alt="App de Claude en un móvil dibujando la última carrera km a km" width="300">
+<img src="docs/images/mobile-last-5-runs.jpeg" alt="App de Claude en un móvil comparando las últimas cinco carreras en una gráfica" width="300">
+</p>
+
+Las capturas están en español porque es el idioma del autor; Claude responde en el idioma en que le escribas.
 
 ## Qué conecta
 
