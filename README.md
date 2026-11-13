@@ -227,20 +227,21 @@ It shows your URL: `https://entrenos-mcp.<your-subdomain>.workers.dev`. To check
 
 ### 10. Connect it to claude.ai
 
-1. In claude.ai, open **Settings → Connectors** and add a **custom connector**, without OAuth, with this URL:
+1. **Build your connector URL.** Start from the address you opened in step 9 to check `/health` and change only the end: **remove `health` and put `mcp/` followed by your token** (the one from step 8).
 
-   ```
-   https://entrenos-mcp.<your-subdomain>.workers.dev/mcp/<YOUR_MCP_TOKEN>
-   ```
+   | | Example (made-up subdomain and token) |
+   |---|---|
+   | What you opened in step 9 | `https://entrenos-mcp.abc123.workers.dev/health` |
+   | What you paste into the connector | `https://entrenos-mcp.abc123.workers.dev/mcp/3f9a1c7e5b2d8a4f6c0e9b1d7a3f5c2e` |
 
-   It's the URL from step 9, followed by `/mcp/` and the token from step 8, with no spaces or extra slashes. For example, with a made-up subdomain and token:
+   - The token must be **exactly the same** one you pasted into `npx wrangler secret put MCP_TOKEN`.
+   - No spaces, no `<` `>` and no trailing slash.
+   - **Don't share this URL** with anyone or paste it into a chat: whoever has it can read your data.
 
-   ```
-   https://entrenos-mcp.abc123.workers.dev/mcp/3f9a1c7e5b2d8a4f6c0e9b1d7a3f5c2e8b4d6a0f1c3e5b7d9a2c4e6f8b0d1a3c
-   ```
+2. In claude.ai, open **Settings → Connectors** → **Add custom connector**. Give it any name, paste the URL from the previous point and leave everything about OAuth empty.
 
-2. In the connector's tool permissions, set the tools that write (`nota`, `estado`, `programar_entrenos`, `programar_rutinas`) to **"Always ask"**.
-3. Create a **project** in claude.ai. Paste in the example instructions from [`claude-ai/en/project-instructions.md`](claude-ai/en/project-instructions.md), adapted to you, and add the [`graficas`](claude-ai/en/skills/graficas/) skill if you want charts.
+3. In the connector's tool permissions, set the tools that write (`nota`, `estado`, `programar_entrenos`, `programar_rutinas`) to **"Always ask"**.
+4. Create a **project** in claude.ai. Paste in the example instructions from [`claude-ai/en/project-instructions.md`](claude-ai/en/project-instructions.md), adapted to you, and add the [`graficas`](claude-ai/en/skills/graficas/) skill if you want charts.
 
 Try asking: *"How has my bench press progressed over the last 3 months?"* or *"Am I overdoing it this week, counting gym and running?"*
 
@@ -298,6 +299,14 @@ Your browser says it can't provide a secure connection when you open `https://en
 - **Fix:** wait, close the tab and open it again. The Worker is already running even if the browser fails.
 
 <!-- Add more cases here: ### Symptom, then **Cause** and **Fix**. -->
+
+### claude.ai can't connect to the connector
+
+It's almost always the URL:
+
+- Check that it ends in `/mcp/` + your token, not `/health`.
+- The token must be exactly the one you saved with `npx wrangler secret put MCP_TOKEN`. If you're not sure, run that command again with a new token and use that one in the URL.
+- No spaces and no trailing slash.
 
 ## Limitations
 

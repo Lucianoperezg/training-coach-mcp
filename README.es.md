@@ -225,20 +225,21 @@ Te enseña tu URL: `https://entrenos-mcp.<tu-subdominio>.workers.dev`. Para comp
 
 ### 10. Conectarlo a claude.ai
 
-1. En claude.ai, abre **Settings → Connectors** y añade un **conector personalizado**, sin OAuth, con esta URL:
+1. **Monta la URL de tu conector.** Parte de la dirección que abriste en el paso 9 para comprobar `/health` y cambia solo el final: **quita `health` y pon `mcp/` seguido de tu token** (el del paso 8).
 
-   ```
-   https://entrenos-mcp.<tu-subdominio>.workers.dev/mcp/<TU_MCP_TOKEN>
-   ```
+   | | Ejemplo (subdominio y token inventados) |
+   |---|---|
+   | Lo que abriste en el paso 9 | `https://entrenos-mcp.abc123.workers.dev/health` |
+   | Lo que pegas en el conector | `https://entrenos-mcp.abc123.workers.dev/mcp/3f9a1c7e5b2d8a4f6c0e9b1d7a3f5c2e` |
 
-   Es la URL del paso 9, seguida de `/mcp/` y del token del paso 8, sin espacios ni barras de más. Por ejemplo, con un subdominio y un token inventados:
+   - El token tiene que ser **exactamente el mismo** que pegaste en `npx wrangler secret put MCP_TOKEN`.
+   - Sin espacios, sin `<` `>` y sin barra al final.
+   - **No compartas esta URL** con nadie ni la pegues en un chat: quien la tenga puede leer tus datos.
 
-   ```
-   https://entrenos-mcp.abc123.workers.dev/mcp/3f9a1c7e5b2d8a4f6c0e9b1d7a3f5c2e8b4d6a0f1c3e5b7d9a2c4e6f8b0d1a3c
-   ```
+2. En claude.ai, abre **Settings → Connectors** → **Add custom connector**. Ponle el nombre que quieras, pega la URL del punto anterior y deja vacío todo lo de OAuth.
 
-2. En los permisos de las herramientas del conector, pon las que escriben (`nota`, `estado`, `programar_entrenos`, `programar_rutinas`) en **"Preguntar siempre"**.
-3. Crea un **proyecto** en claude.ai. Pega las instrucciones de ejemplo de [`claude-ai/es/instrucciones-proyecto.md`](claude-ai/es/instrucciones-proyecto.md) adaptadas a ti y, si quieres gráficas, añade la skill [`graficas`](claude-ai/es/skills/graficas/).
+3. En los permisos de las herramientas del conector, pon las que escriben (`nota`, `estado`, `programar_entrenos`, `programar_rutinas`) en **"Preguntar siempre"**.
+4. Crea un **proyecto** en claude.ai. Pega las instrucciones de ejemplo de [`claude-ai/es/instrucciones-proyecto.md`](claude-ai/es/instrucciones-proyecto.md) adaptadas a ti y, si quieres gráficas, añade la skill [`graficas`](claude-ai/es/skills/graficas/).
 
 Prueba a preguntarle: *"¿Cómo ha evolucionado mi press banca en los últimos 3 meses?"* o *"¿Me estoy pasando esta semana sumando gimnasio y carrera?"*
 
@@ -296,6 +297,14 @@ Al abrir `https://entrenos-mcp.<tu-subdominio>.workers.dev/health`, el navegador
 - **Solución:** espera, cierra la pestaña y vuelve a abrirla. El Worker ya funciona aunque el navegador falle.
 
 <!-- Añade aquí más casos: ### Síntoma, y después **Causa** y **Solución**. -->
+
+### claude.ai no consigue conectar con el conector
+
+Casi siempre es la URL:
+
+- Comprueba que acaba en `/mcp/` + tu token, y no en `/health`.
+- El token debe ser exactamente el que guardaste con `npx wrangler secret put MCP_TOKEN`. Si no estás seguro, vuelve a ejecutar ese comando con un token nuevo y usa ese en la URL.
+- Sin espacios ni barra al final.
 
 ## Limitaciones
 
