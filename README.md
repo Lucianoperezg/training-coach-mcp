@@ -4,6 +4,11 @@
 
 **An architecture to build your own AI training coach**, on a free Cloudflare account. It runs on your own data from your watch and, optionally, from your gym app.
 
+## Why it exists
+
+- **Connect your watch to your AI even if the brand doesn't let you.** Suunto and many other sports apps don't offer an open API or an official connector for your AI. But almost all of them sync with **intervals.icu**, and this project uses that bridge: your Suunto, Garmin, COROS, Polar or Wahoo data reaches Claude.
+- **No server at home.** You don't need to leave a computer on or run anything locally: everything runs **in the cloud, on Cloudflare**, for free, and Claude uses it from the web, mobile or desktop.
+
 The core is generic. It syncs your data, stores it in your own database and lets Claude query it through a remote MCP connector, from the web, mobile or desktop.
 
 The **running and strength coach** in [`claude-ai/`](claude-ai/) is just one example built on top of it. Copy it and adapt it to your sport, your goals and your rules.
@@ -162,7 +167,15 @@ WATCH = "suunto"                  # marca del reloj: "suunto" si es un Suunto (e
   If yours isn't there, look it up in the "TZ identifier" column of [this list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 - **`WATCH` (watch):** it only matters if your watch is a Suunto: then write `"suunto"`. With any other watch, leave it as it is, `""`.
 
-**3. Save the file.** In Notepad, use **File → Save**, not "Save as". Check that the file is still called `wrangler.toml` and not `wrangler.toml.txt`: if you see `.txt` at the end, remove it when renaming.
+**3. Where to start importing your history.** In the same `[vars]` section there is this line:
+
+```toml
+HISTORY_START = "2018-01-01"      # desde cuándo importar el histórico
+```
+
+Set the date when **your data really starts** in intervals.icu, for example `"2024-01-01"` if you started using your watch in 2024. The import moves forward 6 months every 15 minutes: if you leave it at 2018 and your data is recent, you'll wait hours without seeing anything. With the right date, you'll have everything in minutes.
+
+**4. Save the file.** In Notepad, use **File → Save**, not "Save as". Check that the file is still called `wrangler.toml` and not `wrangler.toml.txt`: if you see `.txt` at the end, remove it when renaming.
 
 ### 7. Create the tables
 
@@ -223,7 +236,7 @@ npm run deploy
 
 It shows your URL: `https://entrenos-mcp.<your-subdomain>.workers.dev`. To check it works, open `https://entrenos-mcp.<your-subdomain>.workers.dev/health` in your browser. It should say `{"ok":true,...}`.
 
-**Your history imports by itself, in chunks.** Every 15 minutes it imports about 6 months of activities and up to 80 Hevy workouts, so several years take a few hours. Meanwhile, `estado_atleta` shows how far it has got.
+**Your history imports by itself, in chunks.** Every 15 minutes it imports about 6 months of activities and up to 80 Hevy workouts, so if your `HISTORY_START` (step 6) is years before your first data, it will take hours to reach it. Meanwhile, `estado_atleta` shows how far it has got.
 
 ### 10. Connect it to claude.ai
 
