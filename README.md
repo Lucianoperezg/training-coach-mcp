@@ -214,6 +214,17 @@ npm run dev                              # MCP at http://localhost:8787/mcp/<MCP
 curl "http://localhost:8787/__scheduled?cron=*/15+*+*+*+*"   # trigger a sync
 ```
 
+## Troubleshooting
+
+### `/health` shows `ERR_SSL_VERSION_OR_CIPHER_MISMATCH` on a new Cloudflare account
+
+Your browser says it can't provide a secure connection when you open `https://entrenos-mcp.<your-subdomain>.workers.dev/health`.
+
+- **Cause:** your workers.dev subdomain is brand new and doesn't have its certificate yet. Cloudflare takes from a few minutes to about 30 to issue it.
+- **Fix:** wait, close the tab and open it again. The Worker is already running even if the browser fails.
+
+<!-- Add more cases here: ### Symptom, then **Cause** and **Fix**. -->
+
 ## Limitations
 
 - Metrics computed only by your watch brand's app (its own recovery score, for example) don't reach intervals.icu, so they don't reach the coach. Data from the activity file does: HR, GPS, cadence, altitude, laps…

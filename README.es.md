@@ -214,6 +214,17 @@ npm run dev                              # MCP en http://localhost:8787/mcp/<MCP
 curl "http://localhost:8787/__scheduled?cron=*/15+*+*+*+*"   # lanza una sincronización
 ```
 
+## Problemas frecuentes
+
+### `/health` da `ERR_SSL_VERSION_OR_CIPHER_MISMATCH` en una cuenta de Cloudflare nueva
+
+Al abrir `https://entrenos-mcp.<tu-subdominio>.workers.dev/health`, el navegador dice "Este sitio web no puede proporcionar una conexión segura".
+
+- **Causa:** tu subdominio workers.dev es nuevo y todavía no tiene el certificado. Cloudflare tarda en crearlo desde unos minutos hasta unos 30.
+- **Solución:** espera, cierra la pestaña y vuelve a abrirla. El Worker ya funciona aunque el navegador falle.
+
+<!-- Añade aquí más casos: ### Síntoma, y después **Causa** y **Solución**. -->
+
 ## Limitaciones
 
 - Las métricas que calcula solo la app de tu marca de reloj (por ejemplo, su propia puntuación de recuperación) no llegan a intervals.icu, así que tampoco al entrenador. Sí llegan los datos del archivo de la actividad: FC, GPS, cadencia, altitud, vueltas…
