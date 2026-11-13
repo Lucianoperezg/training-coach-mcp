@@ -245,7 +245,7 @@ It shows your URL: `https://entrenos-mcp.<your-subdomain>.workers.dev`. To check
    | | Example (made-up subdomain and token) |
    |---|---|
    | What you opened in step 9 | `https://entrenos-mcp.abc123.workers.dev/health` |
-   | What you paste into the connector | `https://entrenos-mcp.abc123.workers.dev/mcp/3f9a1c7e5b2d8a4f6c0e9b1d7a3f5c2e` |
+   | What you paste into the connector | `https://entrenos-mcp.abc123.workers.dev/mcp/3f9a1c7e5b2d8a4f6c0e9b1d7a3f5c2e8b4d6a0f1c3e5b7d9a2c4e6f8b0d1a3c` |
 
    - The token must be **exactly the same** one you pasted into `npx wrangler secret put MCP_TOKEN`.
    - No spaces, no `<` `>` and no trailing slash.
@@ -311,8 +311,6 @@ Your browser says it can't provide a secure connection when you open `https://en
 - **Cause:** your workers.dev subdomain is brand new and doesn't have its certificate yet. Cloudflare takes from a few minutes to about 30 to issue it.
 - **Fix:** wait, close the tab and open it again. The Worker is already running even if the browser fails.
 
-<!-- Add more cases here: ### Symptom, then **Cause** and **Fix**. -->
-
 ### claude.ai can't connect to the connector
 
 It's almost always the URL:
@@ -320,6 +318,8 @@ It's almost always the URL:
 - Check that it ends in `/mcp/` + your token, not `/health`.
 - The token must be exactly the one you saved with `npx wrangler secret put MCP_TOKEN`. If you're not sure, run that command again with a new token and use that one in the URL.
 - No spaces and no trailing slash.
+
+<!-- Add more cases here: ### Symptom, then **Cause** and **Fix**. -->
 
 ## Limitations
 

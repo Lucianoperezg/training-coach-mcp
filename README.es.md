@@ -243,7 +243,7 @@ Te enseña tu URL: `https://entrenos-mcp.<tu-subdominio>.workers.dev`. Para comp
    | | Ejemplo (subdominio y token inventados) |
    |---|---|
    | Lo que abriste en el paso 9 | `https://entrenos-mcp.abc123.workers.dev/health` |
-   | Lo que pegas en el conector | `https://entrenos-mcp.abc123.workers.dev/mcp/3f9a1c7e5b2d8a4f6c0e9b1d7a3f5c2e` |
+   | Lo que pegas en el conector | `https://entrenos-mcp.abc123.workers.dev/mcp/3f9a1c7e5b2d8a4f6c0e9b1d7a3f5c2e8b4d6a0f1c3e5b7d9a2c4e6f8b0d1a3c` |
 
    - El token tiene que ser **exactamente el mismo** que pegaste en `npx wrangler secret put MCP_TOKEN`.
    - Sin espacios, sin `<` `>` y sin barra al final.
@@ -309,8 +309,6 @@ Al abrir `https://entrenos-mcp.<tu-subdominio>.workers.dev/health`, el navegador
 - **Causa:** tu subdominio workers.dev es nuevo y todavía no tiene el certificado. Cloudflare tarda en crearlo desde unos minutos hasta unos 30.
 - **Solución:** espera, cierra la pestaña y vuelve a abrirla. El Worker ya funciona aunque el navegador falle.
 
-<!-- Añade aquí más casos: ### Síntoma, y después **Causa** y **Solución**. -->
-
 ### claude.ai no consigue conectar con el conector
 
 Casi siempre es la URL:
@@ -318,6 +316,8 @@ Casi siempre es la URL:
 - Comprueba que acaba en `/mcp/` + tu token, y no en `/health`.
 - El token debe ser exactamente el que guardaste con `npx wrangler secret put MCP_TOKEN`. Si no estás seguro, vuelve a ejecutar ese comando con un token nuevo y usa ese en la URL.
 - Sin espacios ni barra al final.
+
+<!-- Añade aquí más casos: ### Síntoma, y después **Causa** y **Solución**. -->
 
 ## Limitaciones
 
