@@ -1,0 +1,25 @@
+{
+  "name": "entrenos-mcp",
+  "version": "1.0.0",
+  "description": "Reloj (vía intervals.icu) + Hevy opcional -> Claude (MCP) en Cloudflare Workers",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 migrations apply entrenos --remote",
+    "db:init:local": "wrangler d1 migrations apply entrenos --local",
+    "typecheck": "tsc && vitest run",
+    "logs": "wrangler tail",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261029.1",
+    "typescript": "^7.0.2",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.155.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "private": true
+}

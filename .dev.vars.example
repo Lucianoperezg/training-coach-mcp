@@ -1,0 +1,6 @@
+# Solo para probar en local (npm run dev). En Cloudflare se usan `wrangler secret put`.
+MCP_TOKEN=pon_aqui_un_token_de_al_menos_32_caracteres
+INTERVALS_API_KEY=
+HEVY_API_KEY=
+# Opcional: sin él se usa la cuenta de la API key
+INTERVALS_ATHLETE_ID=

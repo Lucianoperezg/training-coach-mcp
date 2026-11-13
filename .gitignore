@@ -1,0 +1,9 @@
+node_modules/
+.wrangler/
+.dev.vars
+*.sql.bak
+copia.sql
+.claude/settings.local.json*
+
+personal/
+.env

@@ -1,0 +1,40 @@
+<style>
+#gr{--t:var(--text-primary,#e8eaf0);--s:var(--text-secondary,#8a90a2);font:13px/1.4 var(--font-sans,system-ui,sans-serif);color:var(--t);background:transparent}
+#gr .c{margin:0 0 14px}#gr .h{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;color:var(--s)}
+#gr b{color:var(--t);font-weight:500;font-size:15px}#gr i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+#gr .l{position:relative;height:110px}#gr .l.g{height:260px}#gr .n{color:var(--s);font-size:11px}
+</style>
+<div id="gr"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const DATA={modo:"apiladas",etiquetas:["A","B","C"],metricas:[{clave:"fc",nombre:"Avg HR",unidad:"bpm",valores:[150,155,152]}],nota:""};
+const C={fc:"#ff4d6d",fc_reposo:"#f472b6",fc_sueno:"#fb7185",cadencia:"#22d3ee",ritmo:"#a78bfa",intensidad:"#fbbf24",carga:"#fb923c",eficiencia:"#34d399",zancada:"#2dd4bf",km:"#38bdf8",tiempo:"#818cf8",desnivel:"#a3e635",vfc:"#4ade80",sueno:"#60a5fa",sueno_puntos:"#93c5fd",forma:"#c084fc",e1rm:"#facc15",peso:"#e879f9",series:"#f97316",volumen:"#fde047",reps:"#5eead4",feel:"#f9a8d4",temperatura:"#fdba74",pasos:"#7dd3fc"};
+const R=["#22d3ee","#ff4d6d","#a78bfa","#fbbf24","#34d399"],col=(m,i)=>C[m.clave]||R[i%5];
+const mm=s=>Math.floor(s/60)+":"+String(Math.round(s%60)).padStart(2,"0");
+const f=(m,v)=>v==null?"–":m.formato==="ritmo"?mm(v):m.formato==="duracion"?mm(v/60):(+v).toLocaleString("en-US",{maximumFractionDigits:m.decimales??0});
+const un=m=>m.formato==="ritmo"?"/km":(m.unidad||""),ok=a=>a.filter(v=>v!=null),avg=a=>{const v=ok(a);return v.reduce((x,y)=>x+y,0)/v.length};
+const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return`rgba(${n>>16},${n>>8&255},${n&255},${a})`};
+const el=document.getElementById("gr"),S=getComputedStyle(el).getPropertyValue("--s").trim()||"#8a90a2";
+Chart.defaults.color=S;Chart.defaults.font.family=getComputedStyle(el).fontFamily;Chart.defaults.animations.colors=false;
+const guia={id:"g",afterDatasetsDraw(c){const a=c.tooltip?.getActiveElements();if(!a?.length)return;const x=a[0].element.x,k=c.ctx;k.save();k.strokeStyle=rgba("#888888",.4);k.beginPath();k.moveTo(x,c.chartArea.top);k.lineTo(x,c.chartArea.bottom);k.stroke();k.restore()}};
+const ds=(m,i,d,o={})=>{const h=col(m,i),b=m.tipo==="barras";return Object.assign({data:d,type:b?"bar":"line",borderColor:h,borderWidth:b?0:2,tension:.4,cubicInterpolationMode:"monotone",pointRadius:d.length>30?0:2,pointBackgroundColor:h,pointBorderWidth:0,spanGaps:false,borderRadius:5,maxBarThickness:22,fill:b?false:"start",backgroundColor:c=>{const a=c.chart.chartArea;if(b)return rgba(h,.7);if(!a)return"transparent";const g=c.chart.ctx.createLinearGradient(0,a.top,0,a.bottom);g.addColorStop(0,rgba(h,.22));g.addColorStop(1,rgba(h,0));return g}},o)};
+const X=v=>({grid:{display:false},border:{display:false},ticks:{display:v,maxRotation:0,autoSkipPadding:12}});
+const Y=o=>Object.assign({grid:{color:rgba("#888888",.12)},border:{display:false},ticks:{maxTicksLimit:3}},o);
+const opt=(sc,tip,hov)=>({maintainAspectRatio:false,interaction:{mode:"index",intersect:false},onHover:hov,plugins:{legend:{display:false},tooltip:{displayColors:false,callbacks:{label:tip}}},scales:sc});
+const caja=(h,g)=>{const d=document.createElement("div");d.className="c";d.innerHTML=h+`<div class="l${g?" g":""}"><canvas></canvas></div>`;el.appendChild(d);return d.querySelector("canvas")};
+const E=DATA.etiquetas,M=DATA.metricas,U=E.length-1;
+if(DATA.modo==="superpuestas"||DATA.modo==="porcentaje"){
+  const P=DATA.modo==="porcentaje",cv=caja(`<div class="h"><span id="gx"></span>`+M.map((m,i)=>`<span><i style="background:${col(m,i)}"></i>${m.nombre} <b id="g${i}"></b></span>`).join("")+`</div>`,1);
+  const ley=j=>{document.getElementById("gx").textContent=E[j];M.forEach((m,i)=>document.getElementById("g"+i).textContent=f(m,m.valores[j])+" "+un(m))};ley(U);
+  const sc={x:X(true)};M.forEach((m,i)=>sc["y"+i]=P?{display:false}:{display:false,reverse:!!m.invertir,grace:"12%"});
+  if(P)sc.y0=Y({ticks:{maxTicksLimit:5,callback:v=>v+" %"}});
+  const d=M.map((m,i)=>{const mu=avg(m.valores);return ds(m,i,P?m.valores.map(v=>v==null?null:(m.invertir?mu/v:v/mu)*100):m.valores,{yAxisID:P?"y0":"y"+i,fill:M.length<3&&!P?"start":false})});
+  new Chart(cv,{data:{labels:E,datasets:d},options:opt(sc,c=>`${M[c.datasetIndex].nombre}: ${f(M[c.datasetIndex],M[c.datasetIndex].valores[c.dataIndex])} ${un(M[c.datasetIndex])}`,(e,a)=>ley(a.length?a[0].index:U)),plugins:[guia]});
+  cv.addEventListener("mouseleave",()=>ley(U));
+}else M.forEach((m,i)=>{
+  const v=ok(m.valores),r=Math.max(...v)-Math.min(...v),p=m.formato==="ritmo"?(r<=90?15:r<=240?30:60):undefined;
+  const cv=caja(`<div class="h"><span><i style="background:${col(m,i)}"></i>${m.nombre}</span><b>${f(m,v[v.length-1])} ${un(m)}</b><span>media ${f(m,avg(m.valores))}</span></div>`,DATA.modo==="unica");
+  new Chart(cv,{data:{labels:E,datasets:[ds(m,i,m.valores)]},options:opt({x:X(DATA.modo==="unica"||i===M.length-1),y:Y({reverse:!!m.invertir,grace:"8%",beginAtZero:m.tipo==="barras",ticks:{maxTicksLimit:p?4:3,stepSize:p,callback:x=>f(m,x)}})},c=>f(m,c.parsed.y)+" "+un(m)),plugins:[guia]});
+});
+if(DATA.nota)el.insertAdjacentHTML("beforeend",`<div class="n">${DATA.nota}</div>`);
+</script>

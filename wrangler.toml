@@ -1,0 +1,30 @@
+name = "entrenos-mcp"
+main = "src/index.ts"
+compatibility_date = "2026-06-01"
+
+# Sincroniza cada 15 minutos (la importación inicial del histórico se hace por tramos)
+[triggers]
+crons = ["*/15 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "entrenos"
+database_id = "PEGA_AQUI_EL_ID"   # el que te da: npx wrangler d1 create entrenos
+migrations_dir = "migrations"
+
+# Límite de peticiones en /mcp: 60 por minuto y por IP
+[[ratelimits]]
+name = "MCP_LIMITER"
+namespace_id = "1001"
+simple = { limit = 60, period = 60 }
+
+[vars]
+HISTORY_START = "2018-01-01"      # desde cuándo importar el histórico
+TZ = "UTC"                        # tu zona horaria, p. ej. "America/Mexico_City" o "Europe/London"
+WATCH = ""                        # marca del reloj: "suunto" si es un Suunto (explica el feel en su escala); si no, vacío
+
+# Secretos (NO van aquí). Se ponen con:
+#   npx wrangler secret put MCP_TOKEN
+#   npx wrangler secret put INTERVALS_API_KEY
+#   npx wrangler secret put HEVY_API_KEY        (opcional)
+#   npx wrangler secret put INTERVALS_ATHLETE_ID (opcional; sin él se usa la cuenta de la API key)
